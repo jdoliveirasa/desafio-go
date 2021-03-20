@@ -1,17 +1,13 @@
-FROM golang:1.14 AS builder
+FROM golang:1.15.10-alpine3.13 AS builder
 WORKDIR /go/src/app
 COPY . .
 
-#RUN go get -d -v ./...
-#RUN go install -v ./...
+RUN go get -d -v ./...
+RUN go install -v ./...
+RUN go build -ldflags "-s -w"
 
-#CMD ["app"]
-
-FROM golang:1.14-alpine
+FROM scratch
 WORKDIR /go/src/app
 COPY --from=builder /go/src/app .
 
-RUN go get -d -v ./...
-RUN go install -v ./...
-
-CMD ["app"]
+CMD ["./app"]
